@@ -14,7 +14,7 @@ var db *pgx.Conn
 
 type DeviceInfo struct {
     Ip          string  `json:"ip"`        
-	Port        int     `json:"port"`
+    Port        int     `json:"port"`
     Sources     string  `json:"sources"`
     Antenna     string  `json:"antenna"`
     Latitude    float64 `json:"latitude"`
@@ -24,7 +24,7 @@ type DeviceInfo struct {
 
 type DevicesResponse struct {
     Error   string          `json:"error"`        
-	Devices []DeviceInfo    `json:"devices"`
+    Devices []DeviceInfo    `json:"devices"`
 }
 
 func apiDevicesHandler(w http.ResponseWriter, req *http.Request) {
@@ -35,7 +35,7 @@ func apiDevicesHandler(w http.ResponseWriter, req *http.Request) {
 
     // Query data
     rows, err := db.Query(context.Background(), "SELECT * FROM devices")
-	if (err != nil) {
+    if (err != nil) {
         resp.Error = "DATABASE_ERROR"
 
         // Send reply
@@ -43,7 +43,7 @@ func apiDevicesHandler(w http.ResponseWriter, req *http.Request) {
         w.Header().Set("Content-Type", "application/json")
         fmt.Fprint(w, string(jsonResp))
         return
-	}
+    }
 
     // Read all rows
     for rows.Next() {
@@ -104,15 +104,15 @@ func main() {
     // Connect to database
     var err error
     db, err = pgx.Connect(context.Background(), "postgres://postgres:12345678@localhost:5432/sdrpp_server_map")
-	if (err != nil) {
-		fmt.Fprintf(os.Stderr, "Could not connect to database: %v\n", err)
-		os.Exit(-1)
-	}
-	defer db.Close(context.Background())
+    if (err != nil) {
+        fmt.Fprintf(os.Stderr, "Could not connect to database: %v\n", err)
+        os.Exit(-1)
+    }
+    defer db.Close(context.Background())
 
     // Static files
     fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fs)
+    http.Handle("/", fs)
 
     // API Handling
     http.HandleFunc("/api/devices", apiDevicesHandler)
